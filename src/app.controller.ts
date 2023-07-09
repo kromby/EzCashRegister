@@ -11,6 +11,11 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    return this.keepthechangeService.getCurrency(2.12, 3.0, 3, [0.25, 0.1, 0.01]);
+    return this.keepthechangeService.getCurrency(
+      2.12,
+      3.0,
+      3,
+      [0.25, 0.1, 0.01],
+    );
   }
 }

@@ -1,3 +1,7 @@
+import {
+  USChangeCalculatorService,
+  USRandomChangeCalculatorService,
+} from './changecalculator/changecalculator.service';
 import { KeepTheChangeModule } from './keepthechange/keepthechange.module';
 import { KeepTheChangeService } from './keepthechange/keepthechange.service';
 // import { KeepthechangeModule } from './keepthechange/keepthechange.module';
@@ -8,6 +12,6 @@ import { AppService } from './app.service';
 @Module({
   imports: [KeepTheChangeModule],
   controllers: [AppController],
-  providers: [AppService, KeepTheChangeService],
+  providers: [USChangeCalculatorService, AppService, KeepTheChangeService],
 })
 export class AppModule {}
