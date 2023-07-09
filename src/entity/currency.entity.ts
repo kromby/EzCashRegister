@@ -1,13 +1,15 @@
+import Decimal from 'decimal.js';
+
 export class CurrencyEntity {
   name: string;
   pluaralName: string;
-  amount: number;
+  amount: Decimal;
   count: number;
 
   constructor(
     name: string,
     pluaralName: string,
-    amount: number,
+    amount: Decimal,
     count: number,
   ) {
     this.name = name;

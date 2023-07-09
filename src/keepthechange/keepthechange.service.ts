@@ -1,30 +1,52 @@
 import { Injectable } from '@nestjs/common';
-import { USChangeCalculatorService } from 'src/changecalculator/changecalculator.service';
+import {
+  USChangeCalculatorService,
+  USRandomChangeCalculatorService,
+} from '../changecalculator/changecalculator.service';
+import Decimal from 'decimal.js';
+import { LoggerService } from '../logger/logger.service';
+import { CurrencyEntity } from '../entity/currency.entity';
 
 @Injectable()
 export class KeepTheChangeService {
-  constructor(private readonly changeCalculator: USChangeCalculatorService) {}
+  constructor(
+    private readonly changeCalculator: USChangeCalculatorService,
+    private readonly randomChangeCalculator: USRandomChangeCalculatorService,
+    private readonly loggerService: LoggerService,
+  ) {}
 
-  getCurrency(
-    amount: number,
-    paid: number,
-    divider: number,
-    availableChange: number[],
-  ): string {
-    const diff = paid - amount;
-    const smu = '';
+  getCurrency(amount: Decimal, paid: Decimal, divider: number): string {
+    const diff = paid.minus(amount);
+    this.loggerService.log(
+      'getCurrency amount: ' + amount,
+      'KeepTheChangeService',
+    );
+    this.loggerService.log(
+      'getCurrency divider: ' + divider,
+      'KeepTheChangeService',
+    );
+    this.loggerService.log(
+      'getCurrency diff.mod(divider): ' +
+        amount.mul(100).mod(new Decimal('3.0')),
+      'KeepTheChangeService',
+    );
 
-    if (diff % divider == 0) return 'Smu ' + diff + ' fleh';
-    else {
-      const changeArray = this.changeCalculator.getChange(diff);
-      let currencyString = '';
+    let changeArray: CurrencyEntity[] = [];
 
-      for (let i = 0; i < changeArray.length; i++) {
-        if (i > 0) currencyString += ',';
-        currencyString += changeArray[i].toString();
-      }
-
-      return currencyString.trim();
+    // .mul(100) is because a fractional number is not divisible by a whole number
+    if (amount.mul(100).mod(divider).eq(0)) {
+      changeArray = this.randomChangeCalculator.getChange(diff);
+    } else {
+      changeArray = this.changeCalculator.getChange(diff);
     }
+
+    let currencyString = '';
+
+    for (let i = 0; i < changeArray.length; i++) {
+      if (i > 0) currencyString += ',';
+      currencyString += changeArray[i].toString();
+    }
+
+    return currencyString.trim();
   }
 }
