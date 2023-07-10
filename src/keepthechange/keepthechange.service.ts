@@ -15,19 +15,43 @@ export class KeepTheChangeService {
     private readonly loggerService: LoggerService,
   ) {}
 
+  calculateChange(input: string, divider: number): string {
+    this.loggerService.log(
+      'input: ' + input,
+      'KeepTheChangeService',
+    );
+    const lines = input.split('\r\n');
+    this.loggerService.log(
+      'lines: ' + lines,
+      'KeepTheChangeService',
+    );
+    let output = '';
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      this.loggerService.log(
+        'line: ' + line,
+        'KeepTheChangeService',
+      );
+      const values = line.split(',');
+
+      if (values.length === 2) {
+        output +=
+          this.getCurrency(
+            new Decimal(values[0].trim()),
+            new Decimal(values[1].trim()),
+            divider,
+          ) + '\n';
+      }
+    }
+
+    return output;
+  }
+
   getCurrency(amount: Decimal, paid: Decimal, divider: number): string {
     const diff = paid.minus(amount);
     this.loggerService.log(
       'getCurrency amount: ' + amount,
-      'KeepTheChangeService',
-    );
-    this.loggerService.log(
-      'getCurrency divider: ' + divider,
-      'KeepTheChangeService',
-    );
-    this.loggerService.log(
-      'getCurrency diff.mod(divider): ' +
-        amount.mul(100).mod(new Decimal('3.0')),
       'KeepTheChangeService',
     );
 
