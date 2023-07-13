@@ -16,23 +16,32 @@ export class KeepTheChangeService {
   ) {}
 
   calculateChange(input: string, divider: number): string {
+    this.loggerService.log('input: ' + input, 'KeepTheChangeService');
+    let lines = input.split('\r\n');
     this.loggerService.log(
-      'input: ' + input,
+      'lines count r-n: ' + lines.length,
       'KeepTheChangeService',
     );
-    const lines = input.split('\r\n');
-    this.loggerService.log(
-      'lines: ' + lines,
-      'KeepTheChangeService',
-    );
+    if (lines.length < 2) {
+      lines = input.split('\n');
+      this.loggerService.log(
+        'lines count n: ' + lines.length,
+        'KeepTheChangeService',
+      );
+    }
+    if (lines.length < 2) {
+      lines = input.split('\r');
+      this.loggerService.log(
+        'lines count r: ' + lines.length,
+        'KeepTheChangeService',
+      );
+    }
+    this.loggerService.log('lines: ' + lines, 'KeepTheChangeService');
     let output = '';
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      this.loggerService.log(
-        'line: ' + line,
-        'KeepTheChangeService',
-      );
+      this.loggerService.log('line: ' + line, 'KeepTheChangeService');
       const values = line.split(',');
 
       if (values.length === 2) {
